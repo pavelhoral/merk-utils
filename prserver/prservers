@@ -39,12 +39,18 @@ stop)
 	service prevent stop
 	service prtraining stop
         ;;
+restart)
+	service prmain restart
+	service prevent restart
+	service prtraining restart
+	;;
 status)
 	echo "Showing PR processes that are running"
 	ps aux|grep -i prmurmurd
 	ps aux|grep -i startmumo
 	ps aux|grep -i start_server.sh
 	ps aux|grep -i prbf2
+	ps aux|grep -i tcpdump
 	;;
 *)
 echo "The PR Server Service"

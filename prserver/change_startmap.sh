@@ -21,8 +21,10 @@ maps[15]='mapList.append black_gold gpm_vehicles 64'
 maps[16]='mapList.append sbeneh_outskirts gpm_vehicles 64'
 maps[17]='mapList.append black_gold gpm_skirmish 16'
 maps[18]='mapList.append operation_marlin gpm_skirmish 16'
+maps[19]='mapList.append ulyanovsk gpm_skirmish 16'
+maps[20]='mapList.append khamisiyah gpm_skirmish 16'
 
-rand=$[$RANDOM % 19]
+rand=$(shuf -i 0-20 -n 1)
 echo $(date)
 echo ${maps[$rand]}
 theMap=${maps[$rand]}
