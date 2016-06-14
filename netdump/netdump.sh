@@ -11,7 +11,7 @@
 
 if [ -z "$TCPDUMP_BASE" ]; then
     if [ -z "$SERVER_BASE" ]; then
-        SERVER_BASE=$(dirname "$0")
+        SERVER_BASE="/home/pr/prMain/"
     fi
     TCPDUMP_BASE="$SERVER_BASE/netdump"
 fi
@@ -20,4 +20,3 @@ if [ -z "$TCPDUMP_FILTER" ]; then
 fi
 
 tcpdump -pni eth0 -s65535 -G 600 -w "$TCPDUMP_BASE/trace_%Y-%m-%d_%H:%M:%S.pcap" "$TCPDUMP_FILTER"
-
