@@ -14,7 +14,7 @@ if [ -z "$SERVER_BASE" ]; then
    SERVER_BASE=$(dirname "$0")
 fi
 if [ -z "$SERVER_NAME" ]; then
-   SERVER_BASE=$(realpath "$SERVER_BASE")
+   SERVER_BASE=$(readlink -f "$SERVER_BASE")
    SERVER_NAME=$(basename "$SERVER_BASE")
 fi
 if [ -z "$BACKUP_BASE" ]; then
@@ -56,7 +56,7 @@ RESTART_COUNTER=0
 while true; do
     start_server
     EXIT_CODE=$?
-    if [ $EXIT_CODE -eq 139 ]; then
+    if [ $EXIT_CODE -eq 139 -o $EXIT_CODE -eq 134 ]; then
         collect_debug
     fi
     RESTART_COUNTER=$((RESTART_COUNTER+=1))

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#The script is used in $SERVER_BASE/start_pr.sh
+
 maps[0]='mapList.append jabal gpm_skirmish 16'
 maps[1]='mapList.append qwai1 gpm_skirmish 16'
 maps[2]='mapList.append sbeneh_outskirts gpm_skirmish 16'
@@ -10,8 +12,17 @@ maps[6]='mapList.append kokan gpm_skirmish 16'
 maps[7]='mapList.append shijiavalley gpm_skirmish 16'
 maps[8]='mapList.append bijar_canyons gpm_skirmish 16'
 maps[9]='mapList.append burning_sands gpm_skirmish 16'
+maps[10]='mapList.append silent_eagle gpm_skirmish 16'
+maps[11]='mapList.append gaza gpm_skirmish 16'
+maps[12]='mapList.append vadso_city gpm_skirmish 16'
+maps[13]='mapList.append dragon_fly gpm_skirmish 16'
+maps[14]='mapList.append xiangshan gpm_skirmish 16'
+maps[15]='mapList.append black_gold gpm_vehicles 64'
+maps[16]='mapList.append sbeneh_outskirts gpm_vehicles 64'
+maps[17]='mapList.append black_gold gpm_skirmish 16'
+maps[18]='mapList.append operation_marlin gpm_skirmish 16'
 
-rand=$[$RANDOM % 10]
+rand=$[$RANDOM % 19]
 echo $(date)
 echo ${maps[$rand]}
 theMap=${maps[$rand]}
