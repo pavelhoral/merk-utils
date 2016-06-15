@@ -9,6 +9,7 @@
 # - BACKUP_BASE = Base directory for data backup (defaults to `$SERVER_BASE/backup`).
 # - TCPDUMP_BASE = Base directory for PCAP files (defaults to `$SERVER_BASE/netdump`).
 # - LOG_FILE = Path to the script's log file (defaults to `$SERVER_BASE/server.log`).
+# - SCRIPT_BASE = Base path for shared scripts (defaults to dirname of script's real location). 
 
 if [ -z "$SERVER_BASE" ]; then
    SERVER_BASE=$(dirname "$0")
@@ -25,6 +26,9 @@ if [ -z "$TCPDUMP_BASE" ]; then
 fi
 if [ -z "$LOG_FILE" ]; then
     LOG_FILE="$SERVER_BASE/server.log"
+fi
+if [ -z "$SCRIPT_BASE" ]; then
+    SCRIPT_BASE=$(dirname "$(readlink -f "$0")")
 fi
 
 # Write message to a log file
