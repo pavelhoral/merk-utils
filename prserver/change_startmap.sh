@@ -1,36 +1,50 @@
 #!/bin/bash
+#
+# Change start map for the PR server. 
+# This script can be directly linked as `on_before_start.sh` event script. 
+#
+# Supported variables:
+#  
+# - SERVER_BASE = Base directory for the server (defaults to script's dirname).
+# - STARTUP_MAPS = Array with startup maps (defaults to a predefined list).
 
-#The script is used in $SERVER_BASE/start_pr.sh
+if [ -z "$SERVER_BASE" ]; then
+   SERVER_BASE=$(dirname "$0")
+fi
 
-maps[0]='mapList.append jabal gpm_skirmish 16'
-maps[1]='mapList.append qwai1 gpm_skirmish 16'
-maps[2]='mapList.append sbeneh_outskirts gpm_skirmish 16'
-maps[3]='mapList.append hill_488 gpm_skirmish 16'
-maps[4]='mapList.append nuijamaa gpm_skirmish 16'
-maps[5]='mapList.append lashkar_valley gpm_skirmish 16'
-maps[6]='mapList.append kokan gpm_skirmish 16'
-maps[7]='mapList.append shijiavalley gpm_skirmish 16'
-maps[8]='mapList.append bijar_canyons gpm_skirmish 16'
-maps[9]='mapList.append burning_sands gpm_skirmish 16'
-maps[10]='mapList.append silent_eagle gpm_skirmish 16'
-maps[11]='mapList.append gaza gpm_skirmish 16'
-maps[12]='mapList.append vadso_city gpm_skirmish 16'
-maps[13]='mapList.append dragon_fly gpm_skirmish 16'
-maps[14]='mapList.append xiangshan gpm_skirmish 16'
-maps[15]='mapList.append black_gold gpm_vehicles 64'
-maps[16]='mapList.append sbeneh_outskirts gpm_vehicles 64'
-maps[17]='mapList.append black_gold gpm_skirmish 16'
-maps[18]='mapList.append operation_marlin gpm_skirmish 16'
-maps[19]='mapList.append ulyanovsk gpm_skirmish 16'
-maps[20]='mapList.append khamisiyah gpm_skirmish 16'
+if [[ ! -v STARTUP_MAPS ]]; then
+	STARTUP_MAPS=()
+	STARTUP_MAPS+=('jabal gpm_skirmish 16')
+	STARTUP_MAPS+=('qwai1 gpm_skirmish 16')
+	STARTUP_MAPS+=('sbeneh_outskirts gpm_skirmish 16')
+	STARTUP_MAPS+=('hill_488 gpm_skirmish 16')
+	STARTUP_MAPS+=('nuijamaa gpm_skirmish 16')
+	STARTUP_MAPS+=('lashkar_valley gpm_skirmish 16')
+	STARTUP_MAPS+=('kokan gpm_skirmish 16')
+	STARTUP_MAPS+=('shijiavalley gpm_skirmish 16')
+	STARTUP_MAPS+=('bijar_canyons gpm_skirmish 16')
+	STARTUP_MAPS+=('burning_sands gpm_skirmish 16')
+	STARTUP_MAPS+=('silent_eagle gpm_skirmish 16')
+	STARTUP_MAPS+=('gaza gpm_skirmish 16')
+	STARTUP_MAPS+=('vadso_city gpm_skirmish 16')
+	STARTUP_MAPS+=('dragon_fly gpm_skirmish 16')
+	STARTUP_MAPS+=('xiangshan gpm_skirmish 16')
+	STARTUP_MAPS+=('black_gold gpm_vehicles 64')
+	STARTUP_MAPS+=('sbeneh_outskirts gpm_vehicles 64')
+	STARTUP_MAPS+=('black_gold gpm_skirmish 16')
+	STARTUP_MAPS+=('operation_marlin gpm_skirmish 16')
+	STARTUP_MAPS+=('ulyanovsk gpm_skirmish 16')
+	STARTUP_MAPS+=('khamisiyah gpm_skirmish 16')
+	STARTUP_MAPS+=('asad_khal gpm_skirmish 16')
+fi
 
-rand=$(shuf -i 0-20 -n 1)
-echo $(date)
-echo ${maps[$rand]}
-theMap=${maps[$rand]}
+# Pick random startup map
+STARTUP_MAP=${STARTUP_MAPS[$RANDOM % ${#STARTUP_MAPS[@]}]}
 
-#Create temporary file with new line in place
-cat /home/pr/prMain/mods/pr/settings/maplist.con | sed -e "19s/.*/${theMap}/" > /tmp/temp_maplist.con
+# Log selection if possible
+if [ "$(type -t log_message)" = "function" ]; then
+    log_message "Changing start-up map to '$STARTUP_MAP'."
+fi
 
-#Copy the new file over the original file
-mv /tmp/temp_maplist.con /home/pr/prMain/mods/pr/settings/maplist.con
+# Replace the startup map
+sed -e "19s/.*/mapList.append $STARTUP_MAP/" -i "$SERVER_BASE/mods/pr/settings/maplist.con"  

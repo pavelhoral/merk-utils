@@ -9,7 +9,10 @@
 # - BACKUP_BASE = Base directory for data backup (defaults to `$SERVER_BASE/backup`).
 # - TCPDUMP_BASE = Base directory for PCAP files (defaults to `$SERVER_BASE/netdump`).
 # - LOG_FILE = Path to the script's log file (defaults to `$SERVER_BASE/server.log`).
-# - SCRIPT_BASE = Base path for shared scripts (defaults to dirname of script's real location). 
+# - SCRIPT_BASE = Base path for shared scripts (defaults to dirname of script's real location).
+#
+# Supported event scripts are:
+# - on_before_start.sh = Executed before the server is being started.
 
 if [ -z "$SERVER_BASE" ]; then
    SERVER_BASE=$(dirname "$0")
@@ -33,12 +36,15 @@ fi
 
 # Write message to a log file
 log_message() {
-    echo "$(date +"%Y-%m-%d %H:%M:%S") [$SERVER_NAME] $1" >> $LOG_FILE
+    echo "$(date +"%Y-%m-%d %H:%M:%S") [$SERVER_NAME] $1" >> "$LOG_FILE"
 }
 
 # Start the server
 start_server() {
-    $SERVER_BASE/start_pr.sh
+	if [ -f "$SERVER_BASE/on_before_start.sh" ]; then
+	    . "$SERVER_BASE/on_before_start.sh"
+	fi
+    "$SERVER_BASE/start_pr.sh"
     return $?
 }
 
@@ -50,7 +56,7 @@ collect_debug() {
 }
 
 # We need to switch to server directory
-cd $SERVER_BASE
+cd "$SERVER_BASE"
 
 log_message "Running server start-up script."
 echo "To stop the server press Ctrl+C..."
