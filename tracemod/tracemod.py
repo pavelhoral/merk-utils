@@ -7,14 +7,16 @@ import datetime
 import host
 import bf2
 
-SERVER_NAME = os.environ['SERVER_NAME'] or os.path.basename(os.getcwd())
-LOG_FILE = os.environ['LOG_FILE'] or os.getcwd() + '/server.log'
+SERVER_NAME = os.getenv('SERVER_NAME') or os.path.basename(os.getcwd())
+LOG_FILE = os.getenv('LOG_FILE') or os.getcwd() + '/server.log'
 
-logFile = open(LOG_FILE, 'a')
+logFile = open(LOG_FILE, 'a', 0)
 
 def init():
     host.registerGameStatusHandler(onGameStatusChanged)
     
+def stampStdOut():
+    print '[' + datetime.datetime.now().isoformat() + '] TRACE ' + LOG_FILE
 
 def writeTrace(message):
     trace = datetime.datetime.now().isoformat().replace('T', ' ')
@@ -36,4 +38,5 @@ def onGameStatusChanged(status):
 
     }
     writeTrace('Game status changed - ' + str(data) + '.')
-
+    if status == bf2.GameStatus.PreGame:
+        stampStdOut()
