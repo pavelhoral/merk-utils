@@ -14,6 +14,9 @@ logFile = open(LOG_FILE, 'a', 0)
 
 def init():
     host.registerGameStatusHandler(onGameStatusChanged)
+    host.registerHandler('PlayerDisconnect', onPlayerDisconnect, 1)
+    host.registerHandler('PlayerConnect', onPlayerConnect, 1)
+    print 'tracemod.py initialized'
     
 def stampStdOut():
     print '[' + datetime.datetime.now().isoformat() + '] TRACE ' + LOG_FILE
@@ -40,3 +43,17 @@ def onGameStatusChanged(status):
     writeTrace('Game status changed - ' + str(data) + '.')
     if status == bf2.GameStatus.PreGame:
         stampStdOut()
+
+def onPlayerDisconnect(playerObject):
+    if not playerObject.isValid():
+        writeTrace('[SEVERE] Received invalid player ' + str(playerObject.index) + '... Server will probably crash.')
+    else:
+        writeTrace('Disconnected "' + playerObject.getName() + '" on index ' + str(playerObject.index) + '.')
+
+def onPlayerConnect(playerObject):
+    stampStdOut()
+    if not playerObject.isValid():
+        writeTrace('[SEVERE] Invalid player connected ' + str(playerObject.index) + '.')
+    else:
+        writeTrace('Connected "' + playerObject.getName() + '" on index ' + str(playerObject.index) + '.')
+
