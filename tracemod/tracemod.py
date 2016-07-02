@@ -18,8 +18,8 @@ def init():
     host.registerHandler('PlayerConnect', onPlayerConnect, 1)
     print 'tracemod.py initialized'
     
-def stampStdOut():
-    print '[' + datetime.datetime.now().isoformat() + '] TRACE ' + LOG_FILE
+def printTrace(message = ''):
+    print '[' + datetime.datetime.now().isoformat() + '] TRACE ' + message 
 
 def writeTrace(message):
     trace = datetime.datetime.now().isoformat().replace('T', ' ')
@@ -32,17 +32,18 @@ def getGameStatusName(status):
             return type
     return str(status)
 
+#~ Event Tracing
 
 def onGameStatusChanged(status):
     data = {
         'status': getGameStatusName(status),
         'map': host.sgl_getMapName(),
         'players': bf2.playerManager.getNumberOfPlayers(),
-
+        'time': host.timer_getWallTime()
     }
     writeTrace('Game status changed - ' + str(data) + '.')
     if status == bf2.GameStatus.PreGame:
-        stampStdOut()
+        printTrace('STAMP')
 
 def onPlayerDisconnect(playerObject):
     if not playerObject.isValid():
@@ -51,9 +52,8 @@ def onPlayerDisconnect(playerObject):
         writeTrace('Disconnected "' + playerObject.getName() + '" on index ' + str(playerObject.index) + '.')
 
 def onPlayerConnect(playerObject):
-    stampStdOut()
+    printTrace('STAMP')
     if not playerObject.isValid():
         writeTrace('[SEVERE] Invalid player connected ' + str(playerObject.index) + '.')
     else:
         writeTrace('Connected "' + playerObject.getName() + '" on index ' + str(playerObject.index) + '.')
-
