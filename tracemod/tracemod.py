@@ -16,6 +16,7 @@ def init():
     host.registerGameStatusHandler(onGameStatusChanged)
     host.registerHandler('PlayerDisconnect', onPlayerDisconnect, 1)
     host.registerHandler('PlayerConnect', onPlayerConnect, 1)
+    host.registerHandler('RemoteCommand', onRemoteCommand, 1)
     print 'tracemod.py initialized'
     
 def printTrace(message = ''):
@@ -57,3 +58,6 @@ def onPlayerConnect(playerObject):
         writeTrace('[SEVERE] Invalid player connected ' + str(playerObject.index) + '.')
     else:
         writeTrace('Connected "' + playerObject.getName() + '" on index ' + str(playerObject.index) + '.')
+
+def onRemoteCommand(playerId, cmd):
+	printTrace('Remote command by ' + str(playerId) + ' ' + cmd)
