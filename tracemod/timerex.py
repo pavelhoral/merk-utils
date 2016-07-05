@@ -24,7 +24,7 @@ def timer_destroy(timer):
     else:
         logger.error('prevented invalid timer destroy call')
 
-# Bit more robust replacement for bf2.Timer object. 
+# Bit more robust replacement for bf2.Timer object.
 class TimerEx:
 
     timerIndex = 0
@@ -42,21 +42,21 @@ class TimerEx:
         self.interval = 0.0
         self.alwaysTrigger = alwaysTrigger
         host.timer_created(self)
-        logger.debug(self, '[TIMER] ' + self.index + 'A created ' + targetFunc.__name__)
+        logger.debug(self.index + ' A created ' + targetFunc.__name__)
 
     def __del__(self):
         # Prevent releasing non-destroyed timer
         if not self.destroyed:
-            logger.error(self, 'D non-destroyed release')
+            logger.error(self.index + ' D non-destroyed release')
             self.destroy()
-        logger.debug(self, 'D destroyed')
+        logger.debug(self.index + ' D destroyed')
 
     def destroy(self):
             # Prevent duplicate destroy call
             if self.destroyed:
-                logger.error(self, 'C prevented duplicate destroy')
+                logger.error(self.index + ' C prevented duplicate destroy')
                 return
-            logger.debug(self, 'C destroying')
+            logger.debug(self.index + ' C destroying')
             host.original_timer_destroy(self)
             self.destroyed = True
 
@@ -64,7 +64,7 @@ class TimerEx:
         return self.time
 
     def setTime(self, time):
-        logger.debug(self, 'B rescheduling ' + str(time))
+        logger.debug(self.index + ' B rescheduling ' + str(time))
         self.time = time
 
     def setRecurring(self, interval):
@@ -72,5 +72,5 @@ class TimerEx:
 
     def onTrigger(self):
         self.triggered = True
-        logger.debug(self, 'B triggered [' + datetime.datetime.now().isoformat() + ']')
+        logger.debug(self.index + ' B triggered [' + datetime.datetime.now().isoformat() + ']')
         self.targetFunc(self.data)
