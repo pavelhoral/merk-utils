@@ -53,10 +53,8 @@ collect_debug() {
     local PREFIX="$(date +"%Y-%m-%d_%H:%M:%S")_$SERVER_NAME"
     mv core "$BACKUP_BASE/$PREFIX"_core
     cp "$TCPDUMP_BASE"/$(ls -1t "$TCPDUMP_BASE" | head -1) "$BACKUP_BASE/$PREFIX"_tcpdump
-    if [ -f "$SERVER_BASE/server.log" ]; then
-        mv "$SERVER_BASE/server.log" "$BACKUP_BASE/$PREFIX"_server.log
-    fi
     if [ -f "$SERVER_BASE/server.out" ]; then
+    	tail -n 1 "$LOG_FILE" >> "$SERVER_BASE/server.out"
         mv "$SERVER_BASE/server.out" "$BACKUP_BASE/$PREFIX"_server.out
     fi
 }
@@ -73,10 +71,9 @@ while true; do
     start_server
     EXIT_CODE=$?
     RESTART_COUNTER=$((RESTART_COUNTER+=1))
-    log_message "Server stopped [CODE=$EXIT_CODE] [COUNTER=$RESTART_COUNTER]."
+    log_message "Server stopped [CODE=$EXIT_CODE] and will be restarted [COUNTER=$RESTART_COUNTER]."
     if [ $EXIT_CODE -eq 139 -o $EXIT_CODE -eq 134 ]; then
         collect_debug
     fi
-    log_message "Server will be restarted."
     sleep 10
 done
