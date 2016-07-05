@@ -13,10 +13,10 @@ class Logger:
         print '[' + datetime.now().isoformat() + '] ' + level + ' [' + self.name + '] ' + message 
 
     def debug(self, message = ''):
-        write('DEBUG', message)
+        self.write('DEBUG', message)
 
     def info(self, message):
-        write('INFO', message)
+        self.write('INFO', message)
 
     def error(self, message):
         self.write('ERROR', message)
