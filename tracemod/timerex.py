@@ -29,7 +29,7 @@ class TimerEx:
 
     timerIndex = 0
 
-    def __init__(self, targetFunc, delta, alwaysTrigger, data=None):
+    def __init__(self, targetFunc, delta, alwaysTrigger, data = None):
         # Custom properties
         TimerEx.timerIndex += 1
         self.index = '%05d' % TimerEx.timerIndex
@@ -73,5 +73,5 @@ class TimerEx:
 
     def onTrigger(self):
         self.triggered = True
-        logger.debug(self.index + ' B triggered [' + datetime.datetime.now().isoformat() + ']')
+        logger.debug(self.index + ' B triggered')
         self.targetFunc(self.data)
