@@ -77,7 +77,7 @@ class TimerEx:
         logger.debug(self.index + ' B triggered')
         try:
             self.targetFunc(self.data)
-        except Exception as error:
+        except Exception, error: # Python 2.3 syntax
             logger.error('Uncaught handler error: ' + str(error))
             traceback.print_exc()
             raise

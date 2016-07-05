@@ -9,7 +9,7 @@ logger = Logger('PRFIX')
 
 # Initialize PR fixes and workarounds
 def init():
-    persistTimer(bf2.Timer(fixAdminTimerLeak, 30, 1, None).setRecurring(30))
+    persistTimer(bf2.Timer(fixAdminTimerLeak, 30, 1).setRecurring(30))
     print 'realityfix.py initialized'
 
 persistedTimers = []
@@ -18,7 +18,7 @@ def persistTimer(timer):
     persistedTimers.append(timer)
 
 # Fix Timer leak in realityadmin.py
-def fixAdminTimerLeak():
+def fixAdminTimerLeak(data = None):
     import game.realityadmin
     if not hasattr(game.realityadmin, 'guidLogTimer'):
         return
