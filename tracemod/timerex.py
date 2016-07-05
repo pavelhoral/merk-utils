@@ -69,6 +69,7 @@ class TimerEx:
 
     def setRecurring(self, interval):
         self.interval = interval
+        return self # Makes creating recurring timer more convenient 
 
     def onTrigger(self):
         self.triggered = True

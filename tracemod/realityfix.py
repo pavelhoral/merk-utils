@@ -5,12 +5,17 @@ import bf2
 import host
 from logger import Logger
 
-logger = Logger('RFIX')
+logger = Logger('PRFIX')
 
 # Initialize PR fixes and workarounds
 def init():
-    bf2.Timer(fixAdminTimerLeak, 30, 1, None).setRecurring(30)
+    persistTimer(bf2.Timer(fixAdminTimerLeak, 30, 1, None).setRecurring(30))
     print 'realityfix.py initialized'
+
+persistedTimers = []
+# Retain timer reference indefinitely
+def persistTimer(timer):
+    persistedTimers.append(timer)
 
 # Fix Timer leak in realityadmin.py
 def fixAdminTimerLeak():
