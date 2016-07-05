@@ -31,8 +31,8 @@ class TimerEx:
 
     def __init__(self, targetFunc, delta, alwaysTrigger, data=None):
         # Custom properties
-        Timer.timerIndex += 1
-        self.index = '%05d' % Timer.timerIndex
+        TimerEx.timerIndex += 1
+        self.index = '%05d' % TimerEx.timerIndex
         self.destroyed = False
         self.triggered = False
         # Original properties
