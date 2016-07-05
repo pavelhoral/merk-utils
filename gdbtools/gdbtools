@@ -4,5 +4,10 @@
 
 # Use LESS as output pager for the specified command
 define less
-    python less('$arg0', '$arg1')
+	if $argc == 1
+    	python less('$arg0')
+	end
+	if $argc == 2
+		python less('$arg0 $arg1')
+	end
 end
