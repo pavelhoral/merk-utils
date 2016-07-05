@@ -2,6 +2,7 @@
 # Various fixes and safety checks for bf2.Timer object.
 #
 import host
+import traceback
 from logger import Logger
 
 # Module logger
@@ -74,4 +75,9 @@ class TimerEx:
     def onTrigger(self):
         self.triggered = True
         logger.debug(self.index + ' B triggered')
-        self.targetFunc(self.data)
+        try:
+            self.targetFunc(self.data)
+        except Exception as error:
+            logger.error('Uncaught handler error: ' + str(error))
+            traceback.print_exc()
+            raise
