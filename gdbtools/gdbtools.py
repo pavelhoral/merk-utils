@@ -1,7 +1,7 @@
 #
-# GDB core dump analysis commands.
+# GDB Tools python scripts.
 #
 import os
 
-def less(command):
-    os.popen('less', 'w').write(gdb.execute('command', to_string = True))
+def less(command, argument = ''):
+    os.popen('less', 'w').write(gdb.execute(command + ' ' + argument, to_string = True))

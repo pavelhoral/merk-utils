@@ -1,0 +1,8 @@
+#
+# GDB Tools command script.
+#
+
+# Use LESS as output pager for the specified command
+define less
+    python less('$arg0', '$arg1')
+end
