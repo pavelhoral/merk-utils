@@ -9,3 +9,7 @@ tracemod.timerex.init()
 # Initialize EventLog - additional event logging
 import tracemod.eventlog
 tracemod.eventlog.init()
+
+# Initialize RealityFix - PR fixes and workarounds
+import tracemod.realityfix
+tracemod.realityfix.init()
