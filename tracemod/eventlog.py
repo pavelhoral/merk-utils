@@ -47,9 +47,11 @@ def onPlayerConnect(playerObject):
     else:
         playerLogger.info('Connected "' + playerObject.getName() + '" on index ' + str(playerObject.index) + '.')
     playerLogger.debug(str({
-        'profileId': player.getProfileId(),
-        'address': player.getAddress(),
-        'count': bf2.playerManager.getNumberOfPlayers()
+        'index': playerObject.index,
+        'name': playerObject.getName(),
+        'profileId': playerObject.getProfileId(),
+        'address': playerObject.getAddress(),
+        'players': bf2.playerManager.getNumberOfPlayers()
     }))
 
 # Log remote command
