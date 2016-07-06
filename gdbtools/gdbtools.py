@@ -8,10 +8,13 @@ def less(command):
     os.popen('less', 'w').write(gdb.execute(command, to_string = True))
 
 # Show contents of Python value
-def pyp(expression):
+def pyp(expression, path = ''):
     value = gdb.parse_and_eval(expression)
     # Dereference and cast
     value = pye_value(value)
+    # Extract path if specified
+    if path:
+        value = pye_path(value, path)
     # Try to print the value
     pyp_print(value)
     # Print via gdb to store casted reference
@@ -19,6 +22,9 @@ def pyp(expression):
 
 # Pretty print Python value
 def pyp_print(value):
+    if str(value.type).endswith('**'):
+        print 'Unsupported type: ' + str(value.type)
+        return
     kind = pye_kind(value)
     if not hasattr(sys.modules[__name__], 'pyp_' + kind):
         print 'Unsupported type: ' + kind
@@ -55,7 +61,22 @@ def pye_type(value):
 
 # Extract casted dereferenced value
 def pye_value(value):
+    if (str(value.type).endswith('**')):
+        return value
     if value.type.code == gdb.TYPE_CODE_PTR:
         value = value.dereference()
     return value.cast(pye_type(value))
+
+# Extract path component from the value
+def pye_path(value, path):
+    if not path:
+        return value
+    elif path.startswith('['):
+        index = int(path[1:path.find(']')])
+        return pye_path(pye_value(value[index]), path[path.find(']') + 1:])
+    else:
+        name = path.split('.')[0]
+        if (name.find('[') > -1):
+            name = name[:name.find('[')]
+        return pye_path(pye_value(value[name]), path[len(name):].strip('.'))
 

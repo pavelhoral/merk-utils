@@ -14,6 +14,11 @@ end
 
 # Pretty print python data type
 define pyp
-    python pyp('$arg0')
+    if $argc == 1
+        python pyp('$arg0')
+    end
+    if $argc == 2
+        python pyp('$arg0', '$arg1')
+    end
 end
 
