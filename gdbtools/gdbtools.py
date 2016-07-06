@@ -21,7 +21,7 @@ def pyp(expression):
 def pyp_print(value):
     kind = pye_kind(value)
     if not hasattr(sys.modules[__name__], 'pyp_' + kind):
-        print 'Unsupported type: ' + str(value.type)
+        print 'Unsupported type: ' + kind
         return
     getattr(sys.modules[__name__], 'pyp_' + kind)(value)
 
@@ -48,7 +48,10 @@ def pye_kind(value):
 def pye_type(value):
     if value.type.code == gdb.TYPE_CODE_PTR:
         value = value.dereference()
-    return gdb.lookup_type('Py' + pye_kind(value).capitalize() + 'Object')
+    try:
+        return gdb.lookup_type('Py' + pye_kind(value).capitalize() + 'Object')
+    except:
+        return gdb.lookup_type('PyObject')
 
 # Extract casted dereferenced value
 def pye_value(value):
