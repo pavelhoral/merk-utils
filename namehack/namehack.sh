@@ -27,6 +27,9 @@ if [ -z "$REJECT_CHAIN" ]; then
 fi
 REJECT_PREFIX="$REJECT_CHAIN: "
 
+# Make sure we have all we need on the path
+PATH=$PATH:/sbin
+
 # Play it safe from this point
 set -e
 
