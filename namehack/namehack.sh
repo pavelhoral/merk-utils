@@ -62,10 +62,18 @@ function reinit {
 }
 
 #
-# Append new CHECK chain rule for the specified player.
+# Append or reject CHECK chain rule for the specified player.
 #
-function append {
-    PLAYER_NAME="$1"
+function modify {
+    if [ "$1" = "ADD"  ]; then
+        OPERATION="-A"
+    elif [ "$1" = "DELETE" ]; then
+        OPERATION="-D"
+    else
+        echo "Missing or invalid operation ($1)."
+        exit 1
+    fi
+    PLAYER_NAME="$2"
     if [ -z "$PLAYER_NAME" ]; then
         echo "Missing player name."
         exit 1
@@ -73,11 +81,11 @@ function append {
     NAME_HEX=$(xxd -pu <<< "$PLAYER_NAME")
     # Standard check
     NAME_LENGTH=$(printf "%02x\n" ${#PLAYER_NAME})
-    iptables -A "$CHECK_CHAIN" -j "$REJECT_CHAIN" \
+    iptables $OPERATION "$CHECK_CHAIN" -j "$REJECT_CHAIN" \
             -m string --hex-string "$NAME_LENGTH$NAME_HEX" --from 50 --to 51 --algo bm \
             -m comment --comment "$PLAYER_NAME"
     # Null-terminated check
-    iptables -A "$CHECK_CHAIN" -j "$REJECT_CHAIN" \
+    iptables $OPERATION "$CHECK_CHAIN" -j "$REJECT_CHAIN" \
             -m string --hex-string "$NAME_HEX"00 --from 51 --to 52 --algo bm \
             -m comment --comment "$PLAYER_NAME"
 }
@@ -89,8 +97,8 @@ case "${1:-''}" in
     reinit)
         reinit
         ;;
-    append)
-        append "$2"
+    modify)
+        modify "$2" "$3"
         ;;
     *)
         echo "Usage: $SELF cleanup|reinig"
