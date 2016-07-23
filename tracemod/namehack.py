@@ -3,6 +3,7 @@
 #
 import host
 import os
+from logger import Logger
 
 logger = Logger('NHACK')
 
