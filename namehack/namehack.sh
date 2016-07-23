@@ -20,7 +20,7 @@ if [ -z "$CHECK_CHAIN" ]; then
     CHECK_CHAIN="NAMEHACK"
 fi
 CHECK_PREFIX="$CHECK_CHAIN: "
-CHECK_FILTER="0>>22&0x3C@8>>24&0xEF=0x0F && 0>>22&0x3C@20=0x01000000 && 0>>22&0x3C@25=0x00000004"
+CHECK_FILTER="0>>22&0x3C@8>>24&0x0F=0x0F && 0>>22&0x3C@20=0x01000000 && 0>>22&0x3C@25=0x00000004"
 
 if [ -z "$REJECT_CHAIN" ]; then
     REJECT_CHAIN="$CHECK_CHAIN"_REJECT
@@ -58,7 +58,7 @@ function reinit {
     cleanup
     iptables -N "$CHECK_CHAIN"
     iptables -A "$CHECK_CHAIN" -j LOG --log-prefix "$CHECK_PREFIX" --log-level 6
-    iptables -A INPUT -p udp --dport $SERVER_PORT \! -f -m u32 --u32 "$CHECK_FILTER" -j "$CHECK_CHAIN" 
+    iptables -A INPUT -p udp --dport $SERVER_PORT -m u32 --u32 "$CHECK_FILTER" -j "$CHECK_CHAIN" 
     iptables -N "$REJECT_CHAIN"
     iptables -A "$REJECT_CHAIN" -j LOG --log-prefix "$REJECT_PREFIX" --log-level 4
     iptables -A "$REJECT_CHAIN" -j DROP
@@ -81,15 +81,15 @@ function modify {
         echo "Missing player name."
         exit 1
     fi
-    NAME_HEX=$(xxd -pu <<< "$PLAYER_NAME")
+    NAME_HEX=$(echo -n "$PLAYER_NAME" | xxd -pu)
     # Standard check
     NAME_LENGTH=$(printf "%02x\n" ${#PLAYER_NAME})
     iptables $OPERATION "$CHECK_CHAIN" -j "$REJECT_CHAIN" \
-            -m string --hex-string "$NAME_LENGTH$NAME_HEX" --from 50 --to 51 --algo bm \
+            -m string --hex-string "|$NAME_LENGTH"00"$NAME_HEX|" --from 49 --to 50 --algo bm \
             -m comment --comment "$PLAYER_NAME"
     # Null-terminated check
     iptables $OPERATION "$CHECK_CHAIN" -j "$REJECT_CHAIN" \
-            -m string --hex-string "$NAME_HEX"00 --from 51 --to 52 --algo bm \
+            -m string --hex-string "|$NAME_HEX"00"|" --from 51 --to 52 --algo bm \
             -m comment --comment "$PLAYER_NAME"
 }
 
