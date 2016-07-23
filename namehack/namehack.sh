@@ -73,7 +73,7 @@ function modify {
     elif [ "$1" = "DELETE" ]; then
         OPERATION="-D"
     else
-        echo "Missing or invalid operation ($1)."
+        echo "Missing or invalid operation (ADD|DELETE)."
         exit 1
     fi
     PLAYER_NAME="$2"
@@ -104,7 +104,7 @@ case "${1:-''}" in
         modify "$2" "$3"
         ;;
     *)
-        echo "Usage: $SELF cleanup|reinig"
+        echo "Usage: $SELF cleanup|reinit|modify"
         exit 1
         ;;
 esac

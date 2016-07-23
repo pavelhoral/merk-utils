@@ -14,6 +14,6 @@ tracemod.eventlog.init()
 import tracemod.realityfix
 tracemod.realityfix.init()
 
-# Initialize NameHack- name hack prevention
+# Initialize NameHack - name hack prevention
 import tracemod.namehack
 tracemod.namehack.init()
