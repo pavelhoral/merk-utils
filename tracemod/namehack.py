@@ -11,7 +11,9 @@ NAMEHACK_SCRIPT='/opt/merk-utils/namehack/namehack.sh'
 
 # Initialize Name Hack handlers
 def init():
-    os.system('sudo -n ' + NAMEHACK_SCRIPT + ' reinit')
+    if not os.system('sudo -n ' + NAMEHACK_SCRIPT + ' reinit') == 0:
+        print 'namehack.py failed to initialize'
+        return 
     host.registerHandler('PlayerDisconnect', onPlayerDisconnect, 1)
     host.registerHandler('PlayerConnect', onPlayerConnect, 1)
     print 'namehack.py initialized'
