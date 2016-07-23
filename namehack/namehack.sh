@@ -11,6 +11,10 @@
 # - REJECT_PREFIX = Log prefix for rejection chain (defaults to "$REJECT_CHAIN: ").
 #
 
+if [ -z "$SERVER_PORT" ]; then
+    SERVER_PORT="16567"
+fi
+
 if [ -z "$CHECK_CHAIN" ]; then
     CHECK_CHAIN="NAMEHACK"
 fi
@@ -27,7 +31,7 @@ set -e
 # Clean-up all custom IPTABLES rules and chains
 function cleanup {
     # Delete existing INPUT rules 
-    iptables -n -L INPUT --line-numbers | awk "\$2==\"$CHECK_CHAIN\" { print \$1 }" | tac | iptables -D INPUT
+    iptables -n -L INPUT --line-numbers | awk "\$2==\"$CHECK_CHAIN\" { print \$1 }" | tac | xargs -r iptables -D INPUT
     # Flush and delete the CHECK chain
     if iptables -n -L $CHECK_CHAIN 2&> /dev/null; then
         iptables -F $CHECK_CHAIN
