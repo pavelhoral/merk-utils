@@ -2,6 +2,24 @@
 #
 # Name Hack IPTABLES rule management script.
 #
+# Following IPTABLES structures are used:
+#
+# - single INPUT rule matching ClientInfo packets and sending them to NAMEHACK chain
+# - NAMEHACK chain with rules checking duplicate ClientInfo packets for each player
+# - NAMEHACK_REJECT reject chain for dropping malicious packets
+#
+# Supported commands:
+#
+# - cleanup = remove all Name Hack related rules and chains from filter IPTABLES
+# - reinit = (re)initialize Name Hack chains and base rules
+# - modify (ADD|DELETE) <name> = add or remove NAMEHACK rules for the specified name  
+#
+# Example usage:
+#
+#   ./namehack.sh reinit
+#   ./namehack.sh modify ADD foobar
+#   ./namehack.sh modify DELETE foobar
+#
 # Supported variables:
 #  
 # - SERVER_PORT = Server port (defaults to 16567).
@@ -73,12 +91,12 @@ function modify {
     elif [ "$1" = "DELETE" ]; then
         OPERATION="-D"
     else
-        echo "Missing or invalid operation (ADD|DELETE)."
+        echo "Missing or invalid operation (ADD|DELETE)." >&2
         exit 1
     fi
     PLAYER_NAME="$2"
     if [ -z "$PLAYER_NAME" ]; then
-        echo "Missing player name."
+        echo "Missing player name." >&2
         exit 1
     fi
     NAME_HEX=$(echo -n "$PLAYER_NAME" | xxd -pu)
@@ -104,7 +122,7 @@ case "${1:-''}" in
         modify "$2" "$3"
         ;;
     *)
-        echo "Usage: $SELF cleanup|reinit|modify"
+        echo "Usage: $SELF cleanup|reinit|modify" >&2
         exit 1
         ;;
 esac
