@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Start PR server and watch handle restarts in case of a server crash.
+# Start PR server and handle restarts in case of a server crash.
 #
 # Supported variables:
 #  
@@ -12,7 +12,9 @@
 # - SCRIPT_BASE = Base path for shared scripts (defaults to dirname of script's real location).
 #
 # Supported event scripts are:
+#
 # - on_before_start.sh = Executed before the server is being started.
+#
 
 if [ -z "$SERVER_BASE" ]; then
    SERVER_BASE=$(dirname "$0")

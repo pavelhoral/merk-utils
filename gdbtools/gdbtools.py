@@ -79,4 +79,3 @@ def pye_path(value, path):
         if (name.find('[') > -1):
             name = name[:name.find('[')]
         return pye_path(pye_value(value[name]), path[len(name):].strip('.'))
-
