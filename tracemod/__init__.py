@@ -17,3 +17,8 @@ tracemod.realityfix.init()
 # Initialize NameHack - name hack prevention
 import tracemod.namehack
 tracemod.namehack.init()
+
+# Initialize Dispatcher - PR event dispatcher
+import tracemod.dispatcher
+tracemod.dispatcher.init()
+

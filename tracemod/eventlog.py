@@ -15,6 +15,7 @@ def init():
     host.registerHandler('PlayerDisconnect', onPlayerDisconnect, 1)
     host.registerHandler('PlayerConnect', onPlayerConnect, 1)
     host.registerHandler('RemoteCommand', onRemoteCommand, 1)
+    host.registerHandler('ValidatePlayerNameResponse', onValidatePlayerName, 1)
     print 'eventlog.py initialized'
 
 # Get name of the GameStatus
@@ -57,3 +58,8 @@ def onPlayerConnect(playerObject):
 # Log remote command
 def onRemoteCommand(playerId, cmd):
 	remoteLogger.trace('Remote command by ' + str(playerId) + ' ' + cmd)
+
+# Log name validation
+def onValidatePlayerName(realNick, oldNick, realPID, oldPID, player):
+    playerLogger.info('Player name validation "' + realNick + '".')
+
