@@ -22,3 +22,7 @@ tracemod.namehack.init()
 import tracemod.dispatcher
 tracemod.dispatcher.init()
 
+# Initialize PlayTime - tracking map play time
+import tracemod.playtime
+tracemod.playtime.init()
+
