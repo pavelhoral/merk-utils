@@ -50,7 +50,7 @@ def finalizePlayTime():
     mapName = bf2.gameLogic.getMapName()
     gameMode = bf2.serverSettings.getGameMode()
     logger.debug(mapName + ' ' + gameMode + ' ' + str(playTime))
-    if gameMode == 'gpm_skrimish':
+    if gameMode == 'gpm_skirmish':
         return # Not interested in skrimish
     try:
         storePlayTime(mapName, playTime)
