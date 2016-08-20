@@ -1,8 +1,9 @@
 #
 # Logging play time to check which maps are overplayed or underplayerd.
 #
-import host
+import os
 import time
+import host
 import bf2
 from logger import Logger
 
@@ -33,6 +34,7 @@ def onGameStatusChange(status):
             roundTime += (time.time() - player.ptimeStart)
         finalizePlayTime()
 
+
 # Handle player connect
 def onPlayerConnect(playerObject):
     playerObject.ptimeStart = time.time()
@@ -44,20 +46,34 @@ def onPlayerDisconnect(playerObject):
 
 # Finalize play time for the current round
 def finalizePlayTime():
-    playTime = roundTime // 3600 # Drop the decimal part (no short maps or small player count)
+    playTime = int(roundTime / 3600) # Drop the decimal part (no short maps or small player count)
     mapName = bf2.gameLogic.getMapName()
-    logger.debug(mapName + ' ' + str(playTime))
-    if bf2.serverSettings.getGameMode() == 'gpm_skrimish':
+    gameMode = bf2.serverSettings.getGameMode()
+    logger.debug(mapName + ' ' + gameMode + ' ' + str(playTime))
+    if gameMode == 'gpm_skrimish':
         return # Not interested in skrimish
     try:
-        storePlayTime()
+        storePlayTime(mapName, playTime)
     except Exception, error:
         logger.error('Error storing play time: ' + str(error))
 
 # Persist recorded play time
 def storePlayTime(mapName, playTime):
+    ptimeData = readPlayTimeData()
+    ptimeAdded = False
+    for index, ptimeEntry in enumerate(ptimeData): 
+        if ptimeEntry.startswith(mapName + ' '):
+            ptimeData[index] = mapName + '\t' + str(int(ptimeEntry.split('\t')[1]) + playTime)
+            ptimeAdded = True
+    if not ptimeAdded:
+        ptimeData.append(mapName + '\t' + str(playTime))
+    writePlayTimeData(ptimeData)
+
+# Read play time data from a file
+def readPlayTimeData():
     ptimeData = []
-    # Read already recorded play times
+    if not os.path.exists(PLAYTIME_FILE):
+        return ptimeData
     ptimeFile = open(PLAYTIME_FILE, 'r')
     try:
         for ptimeLine in ptimeFile:
@@ -66,19 +82,14 @@ def storePlayTime(mapName, playTime):
                 ptimeData.append(ptimeLine)
     finally:
         ptimeFile.close()
-    # Add current play time to the data
-    ptimeAdded = False
-    for index, ptimeEntry in enumerate(ptimeData): 
-        if ptimeEntry.startswith(mapName + ' '):
-            ptimeData[index] = mapName + '\t' + str(int(ptimeEntry.split('\t')[1]) + playTime)
-            ptimeAdded = True
-    if not ptimeAdded:
-        ptimeData.append(mapName + '\t' + str(playTime))
-    # Sort data and write to file
-    sorted(ptimeData)
-    ptimeFile = open(PLAYTIME_FILE, 'w')
+    return ptimeData
+
+# Write play time data to a file
+def writePlayTimeData(ptimeData):
+    ptimeData.sort()
+    ptimeFile = open(PLAYTIME_FILE, 'w+')
     try:
         ptimeFile.write('\n'.join(ptimeData))
     finally:
-        ptimeFile.close() 
+        ptimeFile.close()
 
