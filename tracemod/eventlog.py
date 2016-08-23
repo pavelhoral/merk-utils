@@ -1,4 +1,4 @@
-# 
+#
 # Module designed to write additional trace information to server's log file.
 #
 import host
@@ -57,7 +57,7 @@ def onPlayerConnect(playerObject):
 
 # Log remote command
 def onRemoteCommand(playerId, cmd):
-	remoteLogger.trace('Remote command by ' + str(playerId) + ' ' + cmd)
+    remoteLogger.debug('Remote command by ' + str(playerId) + ' ' + cmd)
 
 # Log name validation
 def onValidatePlayerName(realNick, oldNick, realPID, oldPID, player):
