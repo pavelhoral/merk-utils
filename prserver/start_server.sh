@@ -2,6 +2,12 @@
 #
 # Start PR server and handle restarts in case of a server crash.
 #
+# Script setup:
+#
+# - This script is intended to be symlinked or copied under the server's base directory.
+# - For any additional startup logic link or create additional event script (see bellow).
+# - Script creates and maintains server (re)start log file as defined by $LOG_FILE.
+#
 # Supported variables:
 #  
 # - SERVER_BASE = Base directory for the server (defaults to script's dirname).
@@ -9,7 +15,6 @@
 # - BACKUP_BASE = Base directory for data backup (defaults to `$SERVER_BASE/backup`).
 # - TCPDUMP_BASE = Base directory for PCAP files (defaults to `$SERVER_BASE/netdump`).
 # - LOG_FILE = Path to the script's log file (defaults to `$SERVER_BASE/server.log`).
-# - SCRIPT_BASE = Base path for shared scripts (defaults to dirname of script's real location).
 #
 # Supported event scripts are:
 #
@@ -17,11 +22,11 @@
 #
 
 if [ -z "$SERVER_BASE" ]; then
-   SERVER_BASE=$(dirname "$0")
+    SERVER_BASE=$(dirname "$0")
 fi
 if [ -z "$SERVER_NAME" ]; then
-   SERVER_BASE=$(readlink -f "$SERVER_BASE")
-   SERVER_NAME=$(basename "$SERVER_BASE")
+    SERVER_BASE=$(readlink -f "$SERVER_BASE")
+    SERVER_NAME=$(basename "$SERVER_BASE")
 fi
 if [ -z "$BACKUP_BASE" ]; then
     BACKUP_BASE="$SERVER_BASE/backup"
@@ -31,9 +36,6 @@ if [ -z "$TCPDUMP_BASE" ]; then
 fi
 if [ -z "$LOG_FILE" ]; then
     LOG_FILE="$SERVER_BASE/server.log"
-fi
-if [ -z "$SCRIPT_BASE" ]; then
-    SCRIPT_BASE=$(dirname "$(readlink -f "$0")")
 fi
 
 # Write message to a log file
