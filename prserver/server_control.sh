@@ -9,6 +9,9 @@
 # Screens are named based on $SCREEN_NAME variable (see bellow). Every window has its symbolic 
 # title based on the running component (e.g. SERVER, MURMUR, MUMO, ...).
 #
+# Connecting to the screen is as easy as writing `screen -x $SCREEN_NAME`. To switch between
+# screen's windows push CTRL-A followed by ".
+#
 # Script setup:
 #
 # - This script is intended to be included inside server init script.
@@ -18,6 +21,7 @@
 # - SERVER_BASE = Base directory for the server (defaults to script's dirname).
 # - SERVER_NAME = Symbolic name of the server (defaults to basename of `$SERVER_BASE`).
 # - SCREEN_NAME = Name of the daemon screen (defaults to `pr-$SERVER_NAME`)
+# - SERVER_USER = Name of the user to run the server's screen (defaults to 'pr'). 
 #
 
 if [ -z "$SERVER_BASE" ]; then
@@ -29,6 +33,9 @@ if [ -z "$SERVER_NAME" ]; then
 fi
 if [ -z "$SCREEN_NAME" ]; then
     SCREEN_NAME="pr-$SERVER_NAME"
+fi
+if [ -z "$SERVER_USER" ]; then
+    SERVER_USER="pr"
 fi
 
 #
@@ -46,17 +53,24 @@ report_info() {
 }
 
 #
+# Run screen command under the correct user.
+#
+call_screen() {
+    sudo -u "$SERVER_USER" screen "$@"
+}
+
+#
 # Get PID of the server's daemon screen.
 # Arguments: {required}.
 #
 get_screen_pid() {
-    SCREEN_PIDS=($(screen -S "$SCREEN_NAME" -ls | grep -Po '^\t[0-9]+' | xargs))
+    SCREEN_PIDS=($(call_screen -S "$SCREEN_NAME" -ls | grep -Po '^\t[0-9]+' | xargs))
     if [ ${#SCREEN_PIDS[@]} -gt 1 ]; then
         report_error "Multiple matching screen PIDs detected: ${SCREEN_PIDS[@]}."
         exit 1
     elif [ ${#SCREEN_PIDS[@]} -eq 1 ]; then
         echo "${SCREEN_PIDS[0]}"
-    elif [ "$1" -eq 1 ]; then
+    elif [ "$1" == 1 ]; then
         report_error "Can not find running screen with matching name '$SCREEN_NAME'."
         exit 1
     fi
@@ -64,6 +78,7 @@ get_screen_pid() {
 
 #
 # Start the server in a dedicated daemon screen and initialize its components.
+# Arguments: {command}.
 #
 start_server() {
     # Prevent duplicate server startup
@@ -74,23 +89,16 @@ start_server() {
     fi
     # Start the server daemon screen
     cd "$SERVER_BASE"
-    screen -dmUS "$SCREEN_NAME" -t SERVER ./start_server.sh
+    report_info "Running server screen under '$SERVER_BASE'."
+    call_screen -dmUS "$SCREEN_NAME" -t SERVER "$@"
+    sleep 2 # Wait for the screen to come up or crash
     SCREEN_PID=$(get_screen_pid)
-    report_info "Started daemon screen '$SCREEN_NAME' with PID $SCREEN_PID."
-
-    # START PRBF2: $SERVER_BASE/start_server.sh
-    # START Murmur: $SERVER_BASE/mods/pr/bin/PRMurmur/prmurmurd.x64
-    # START Mumo: $SERVER_BASE/mods/pr/bin/PRMurmur/startmumo.sh
-    # START Proxy: $SERVER_BASE/node/bin/node proxy
-    # START NetDump: ???
-
-    # Possibilities:
-    ## Start screen with separate windows for each process (not quite needed).
-    ### PROS: maybe easily detect if any component fails, CONS: X windows is not easily customizable
-    ## Start screen with window for PRBF2 and a secondary window running other processes in background.
-    ### PROS: simple to extend, CONS: can we detect component failure? should we?
-    ## Use start-stop-daemon and possibly use standard PID files.
-    ### This is probably too much complex
+    if [ -z "$SCREEN_PID" ]; then
+        report_error "Failed to start the main server screen."
+        exit 1
+    else
+        report_info "Started daemon screen '$SCREEN_NAME' with PID $SCREEN_PID."
+    fi
 }
 
 #
@@ -100,9 +108,9 @@ stop_server() {
     SCREEN_PID=$(get_screen_pid 1)
     if [ ! -z "$SCREEN_PID" ]; then
         report_info "Stopping matched screen with PID "$SCREEN_PID"..."
-        screen -S "$SCREEN_PID"."$SCREEN_NAME" -X quit
+        call_screen -S "$SCREEN_PID"."$SCREEN_NAME" -X quit
         # Wait for the screen to terminate.
-        wait $SCREEN_PID
+        sleep 2 # TODO implement checking in loop
         report_info "Server daemon screen stopped."
     fi
 }
@@ -119,9 +127,9 @@ start_component() {
         exit 1
     fi
     # Create new window for the component
-    screen -S "$SCREEN_PID"."$SCREEN_NAME" -X screen -t "$COMPONENT_NAME"
+    call_screen -S "$SCREEN_PID"."$SCREEN_NAME" -X screen -t "$COMPONENT_NAME"
     # Start the component
-    screen -S "$SCREEN_PID"."$SCREEN_NAME" -p "$COMPONENT_NAME" -X stuff "exec ${@:2}\r"
+    call_screen -S "$SCREEN_PID"."$SCREEN_NAME" -p "$COMPONENT_NAME" -X stuff "exec ${*:2}\r"
 }
 
 #
@@ -135,7 +143,7 @@ stop_component() {
     if [ -z "$SCREEN_PID" ]; then
         exit 1
     fi
-    screen -S "$SCREEN_PID"."$SCREEN_NAME" -p "$1" -X kill
+    call_screen -S "$SCREEN_PID"."$SCREEN_NAME" -p "$1" -X kill
 }
 
 #
