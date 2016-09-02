@@ -42,14 +42,14 @@ fi
 # Report script failure.
 #
 report_error() {
-    echo "[ERROR] $@" 1>&2
+    echo "[ERROR] $*" 1>&2
 }
 
 #
 # Report script action.
 #
 report_info() {
-    echo "[INFO] $@"
+    echo "[INFO] $*"
 }
 
 #
@@ -154,8 +154,8 @@ server_status() {
     if [ -z "$SCREEN_PID" ]; then
         report_info "No running screen matches '$SCREEN_NAME'."
     else
-        SCREEN_COMPONENTS=$(screen -S "$SCREEN_PID"."$SCREEN_NAME" -Q windows)
-		report_info "Running components: $SCREEN_COMPONENTS."
+        SCREEN_COMPONENTS=$(call_screen -S "$SCREEN_PID"."$SCREEN_NAME" -Q windows)
+        report_info "Running components: "$SCREEN_COMPONENTS"."
     fi
 }
 

@@ -24,7 +24,7 @@ case "$1" in
         start_server ./start_server.sh
         start_component MURMUR 'bash -c "cd mods/pr/bin/PRMurmur; ./prmurmurd.x64 -fg"'
         start_component MUMO 'bash -c "cd mods/pr/bin/PRMurmur; ./startmumo.sh"'
-        start_component PROXY 'bash -c "node/bin/node proxy | tee proxy.log"'
+        start_component PROXY 'bash -c "shared/nodejs/bin/node shared/proxy/src | tee proxy.log"'
     ;;
     stop)
         stop_server
