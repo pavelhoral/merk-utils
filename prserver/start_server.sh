@@ -9,16 +9,15 @@
 # - Script creates and maintains server (re)start log file as defined by $LOG_FILE.
 #
 # Supported variables:
-#  
+#
 # - SERVER_BASE = Base directory for the server (defaults to script's dirname).
 # - SERVER_NAME = Symbolic name of the server (defaults to basename of `$SERVER_BASE`).
-# - BACKUP_BASE = Base directory for data backup (defaults to `$SERVER_BASE/backup`).
-# - TCPDUMP_BASE = Base directory for PCAP files (defaults to `$SERVER_BASE/netdump`).
 # - LOG_FILE = Path to the script's log file (defaults to `$SERVER_BASE/server.log`).
 #
 # Supported event scripts are:
 #
 # - on_before_start.sh = Executed before the server is being started.
+# - on_after_crash.sh = Executed when server crash is detected.
 #
 
 if [ -z "$SERVER_BASE" ]; then
@@ -27,12 +26,6 @@ fi
 if [ -z "$SERVER_NAME" ]; then
     SERVER_BASE=$(readlink -f "$SERVER_BASE")
     SERVER_NAME=$(basename "$SERVER_BASE")
-fi
-if [ -z "$BACKUP_BASE" ]; then
-    BACKUP_BASE="$SERVER_BASE/backup"
-fi
-if [ -z "$TCPDUMP_BASE" ]; then
-    TCPDUMP_BASE="$SERVER_BASE/netdump"
 fi
 if [ -z "$LOG_FILE" ]; then
     LOG_FILE="$SERVER_BASE/server.log"
@@ -45,21 +38,17 @@ log_message() {
 
 # Start the server
 start_server() {
-	if [ -f "$SERVER_BASE/on_before_start.sh" ]; then
-	    . "$SERVER_BASE/on_before_start.sh"
-	fi
+    if [ -f "$SERVER_BASE/on_before_start.sh" ]; then
+        . "$SERVER_BASE/on_before_start.sh"
+    fi
     "$SERVER_BASE/start_pr.sh"
     return $?
 }
 
-# Collect debug information
-collect_debug() {
-    local PREFIX="$(date +"%Y-%m-%d_%H:%M:%S")_$SERVER_NAME"
-    mv core "$BACKUP_BASE/$PREFIX"_core
-    cp "$TCPDUMP_BASE"/$(ls -1t "$TCPDUMP_BASE" | head -1) "$BACKUP_BASE/$PREFIX"_tcpdump
-    if [ -f "$SERVER_BASE/server.out" ]; then
-    	tail -n 1 "$LOG_FILE" >> "$SERVER_BASE/server.out"
-        mv "$SERVER_BASE/server.out" "$BACKUP_BASE/$PREFIX"_server.out
+# Handle server crash
+handle_crash() {
+    if [ -f "$SERVER_BASE/on_after_crash.sh" ]; then
+        . "$SERVER_BASE/on_after_crash.sh"
     fi
 }
 
@@ -77,7 +66,7 @@ while true; do
     RESTART_COUNTER=$((RESTART_COUNTER+=1))
     log_message "Server stopped [CODE=$EXIT_CODE] and will be restarted [COUNTER=$RESTART_COUNTER]."
     if [ $EXIT_CODE -eq 139 -o $EXIT_CODE -eq 134 ]; then
-        collect_debug
+        handle_crash
     fi
     sleep 10
 done
