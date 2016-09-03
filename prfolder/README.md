@@ -10,6 +10,7 @@ The general structure of the root folder (usually placed under `/opt/pr`) is:
 * `{instance}/` - server instances (clone of the BASE PR)
 * `shared/` - shared server components
    * `nodejs/` - NodeJS installation
+   * `proxy/` - game proxy (clone of pr-gameproxy)
    * `utils/` - shared utility scripts (clone of merk-utils)
 * `work/` - work directory for any other stuff
 
@@ -26,10 +27,14 @@ Next a special branch which will hold BASE server modifications:
 
     git checkout -b merk
 
-To link everything up the following modifications should be done indifr BASE directory:
+To link everything up the following modifications should be done inside the BASE directory:
 
     ln -s ../shared shared
     ln -s shared/utils/prserver/start_server.sh .
+
+If you want to use any of the custom Python extension modules, you should put *utils* project on the Python path. To do that place in the beginning of the file `python/bf2/__init__.py` (after initial imports) the following line:
+
+    sys.path.append('shared/utils')
 
 
 ## Creating New Server Instance

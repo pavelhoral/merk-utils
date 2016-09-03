@@ -28,7 +28,7 @@ This solution is **deprecated** in favor of a proxy based approach by [prproxy](
 
 ## Net Dump (netdump)
 
-TCPDUMP wrapper for capturing network activity in a space limited fashion. Script `netdump.sh` runs the *tcpdump* to collect packets in 10 minute based segments (PR can generate 1~2 GB) and `cleanup.sh` drops old capture files.
+TCPDUMP wrapper for capturing network activity in a space limited fashion. Script `netdump.sh` runs the *tcpdump* to collect packets in 10 minute based segments (PR can generate 1~2 GB during that period) and `cleanup.sh` drops old capture files.
 
 ## Project Reality Folder (prfolder)
 
@@ -44,3 +44,14 @@ See component's [README.md](prserver/README.md) for more details.
 
 Game Python extension base module with shared components. See component's [README.md](pyebase/README.md) for more details.
 
+## Reality Python Fixes (realityfix)
+
+Fixes of various Project Reality Python bugs.  See component's [README.md](realityfix/README.md) for more details.
+
+## Python Sandbox Module (sandbox)
+
+Module with various scripts in more or less mature state. See component's [README.md](sandbox/README.md) for more details.
+
+## Python Trace Module (tracemod)
+
+Module providing verbose debug logging to help solving server crashes or other gameplay issues. See component's [README.md](tracemod/README.md) for more details.

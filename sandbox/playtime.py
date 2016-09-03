@@ -1,11 +1,12 @@
 #
-# Logging play time to check which maps are overplayed or underplayerd.
+# Logging play time to check which maps are overplayed or underplayed.
 #
+import sys
 import os
 import time
 import host
 import bf2
-from logger import Logger
+from pyebase import Logger
 
 logger = Logger('PTIME')
 
@@ -49,19 +50,20 @@ def finalizePlayTime():
     playTime = int(roundTime / 3600) # Drop the decimal part (no short maps or small player count)
     mapName = bf2.gameLogic.getMapName()
     gameMode = bf2.serverSettings.getGameMode()
-    logger.debug(mapName + ' ' + gameMode + ' ' + str(playTime))
+    logger.debug('%s %s %d', mapName, gameMode, playTime)
     if gameMode == 'gpm_skirmish':
         return # Not interested in skrimish
     try:
         storePlayTime(mapName, playTime)
-    except Exception, error:
-        logger.error('Error storing play time: ' + str(error))
+    except:
+        logger.error('Error storing play time: %s.', sys.exc_info()[1])
+        sys.exc_clear()
 
 # Persist recorded play time
 def storePlayTime(mapName, playTime):
     ptimeData = readPlayTimeData()
     ptimeAdded = False
-    for index, ptimeEntry in enumerate(ptimeData): 
+    for index, ptimeEntry in enumerate(ptimeData):
         if ptimeEntry.startswith(mapName + ' '):
             ptimeData[index] = mapName + '\t' + str(int(ptimeEntry.split('\t')[1]) + playTime)
             ptimeAdded = True
@@ -92,4 +94,3 @@ def writePlayTimeData(ptimeData):
         ptimeFile.write('\n'.join(ptimeData))
     finally:
         ptimeFile.close()
-

@@ -1,7 +1,8 @@
 #
 # Event dispatcher replacement for realityevents.py.
 #
-from logger import Logger
+import sys, traceback
+from pyebase import Logger
 import game.realityevents
 
 logger = Logger('EVENT')
@@ -24,21 +25,21 @@ def init():
 # Direct sendToHandlers method replacement
 #
 def dispatchGameEvent(event, extraLocals):
-    logger.debug(event[3] + ' ' + str(len(event[1])))
+    logger.debug('%s [%d]', event[3], len(event[1]))
     for function in event[1]:
         handler = function[0]
         handlerName = handler.__module__ + ' ' + handler.func_name
         if function[1] == 0 and game.realityevents.gameStatus != 1:
-            logger.debug('Skipping handler ' + handlerName)
+            logger.debug('Skipping handler %s.', handlerName)
             continue
         localsNamespace = dict(extraLocals)
         localsNamespace.update(locals())
         try:
             eval('handler' + event[2], globals(), localsNamespace)
-        except Exception, error: # Python 2.3 syntax
-            logger.error('Uncaught error in ' + handlerName + ': ' + str(error))
+        except:
+            logger.error('Uncaught error in %s: %s.', handlerName, sys.exc_info()[1])
             traceback.print_exc()
-            error = None
+            sys.exc_clear()
         localsNamespace.clear()
 
 #
@@ -55,11 +56,11 @@ def dispatchStatusEvent(status):
     for handler in statusHandlers:
         try:
             handler(status)
-        except Exception, error: # Python 2.3 syntax
+        except:
             handlerName = handler.__module__ + ' ' + handler.func_name
-            logger.error('Uncaught error in ' + handlerName + ': ' + str(error))
+            logger.error('Uncaught error in %s: %s.', handlerName, sys.exc_info()[1])
             traceback.print_exc()
-            error = None
+            sys.exc_clear()
 
 #
 # Replacement for the standard host.registerGameStatusHandler
@@ -68,9 +69,9 @@ def registerGameStatusHandler(handler):
     handlerName = handler.__module__ + ' ' + handler.func_name
     for registeredHandler in statusHandlers:
         if registeredHandler == handler:
-            logger.error('Duplicate status handler registration: ' + handlerName)
+            logger.error('Duplicate status handler registration: %s.', handlerName)
             return
-    logger.debug('Registering status handler ' + handlerName + '[' + str(len(statusHandlers)) + ']')
+    logger.debug('Registering status handler %s [%d].', handlerName, len(statusHandlers))
     statusHandlers.append(handler)
 
 #
@@ -80,7 +81,7 @@ def unregisterGameStatusHandler(handler):
     handlerName = handler.__module__ + ' ' + handler.func_name
     for registeredHandler in statusHandlers.items():
         if registeredHandler == handler:
-            logger.debug('Unregistering status handler ' + handlerName + '[' + str(len(statusHandlers)) + ']')
+            logger.debug('Unregistering status handler %s [%d].', handlerName, len(statusHandlers))
             statusHandlers.remove(handler)
             return
-    logger.error('Trying to unregister non-registered handler: ' + handlerName)
+    logger.error('Trying to unregister non-registered handler: %s.', handlerName)

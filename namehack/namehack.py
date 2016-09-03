@@ -23,10 +23,10 @@ def init():
 def onPlayerConnect(playerObject):
     playerName = ('X' + playerObject.getName()).split()[1]
     os.system('sudo -n ' + NAMEHACK_SCRIPT + ' modify ADD \'' + playerName.replace("'", "'\\''") + '\'')
-    logger.info('Added "%s".', playerName)
+    logger.debug('Added "%s".', playerName)
 
 # Delete player rules
 def onPlayerDisconnect(playerObject):
     playerName = ('X' + playerObject.getName()).split()[1]
     os.system('sudo -n ' + NAMEHACK_SCRIPT + ' modify DELETE \'' + playerName.replace("'", "'\\''") + '\'')
-    logger.info('Deleted "%s".', playerName)
+    logger.debug('Deleted "%s".', playerName)

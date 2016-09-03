@@ -1,9 +1,9 @@
 #
-# Module designed to write additional trace information to server's log file.
+# Various game event logging routines.
 #
 import host
 import bf2
-from logger import Logger
+from pyebase import Logger
 
 statusLogger = Logger('STATUS')
 playerLogger = Logger('PLAYER')
@@ -15,7 +15,6 @@ def init():
     host.registerHandler('PlayerDisconnect', onPlayerDisconnect, 1)
     host.registerHandler('PlayerConnect', onPlayerConnect, 1)
     host.registerHandler('RemoteCommand', onRemoteCommand, 1)
-    host.registerHandler('ValidatePlayerNameResponse', onValidatePlayerName, 1)
     print 'eventlog.py initialized'
 
 # Get name of the GameStatus
@@ -27,39 +26,34 @@ def getGameStatusName(status):
 
 # Log game status change
 def onGameStatusChanged(status):
-    statusLogger.info('Game status changed to ' + getGameStatusName(status) + '.')
-    statusLogger.debug(str({
+    statusLogger.info('Game status changed to %s.', getGameStatusName(status))
+    statusLogger.debug('%s', {
         'map': host.sgl_getMapName(),
         'players': bf2.playerManager.getNumberOfPlayers(),
         'time': host.timer_getWallTime()
-    }))
+    })
 
 # Log player disconnect
 def onPlayerDisconnect(playerObject):
     if not playerObject.isValid():
-        playerLogger.error('Received invalid player ' + str(playerObject.index) + '.')
+        playerLogger.error('Received invalid player index %d.', playerObject.index)
     else:
-        playerLogger.info('Disconnected "' + playerObject.getName() + '" on index ' + str(playerObject.index) + '.')
+        playerLogger.info('Disconnected "%s" on index %d.', playerObject.getName(), playerObject.index)
 
 # Log player connect
 def onPlayerConnect(playerObject):
     if not playerObject.isValid():
-        playerLogger.error('Invalid player connected ' + str(playerObject.index) + '.')
+        playerLogger.error('Invalid player connected %d.', playerObject.index)
     else:
-        playerLogger.info('Connected "' + playerObject.getName() + '" on index ' + str(playerObject.index) + '.')
-    playerLogger.debug(str({
+        playerLogger.info('Connected "%s" on index %d.', playerObject.getName(), playerObject.index)
+    playerLogger.debug('%s', {
         'index': playerObject.index,
         'name': playerObject.getName(),
         'profileId': playerObject.getProfileId(),
         'address': playerObject.getAddress(),
         'players': bf2.playerManager.getNumberOfPlayers()
-    }))
+    })
 
 # Log remote command
 def onRemoteCommand(playerId, cmd):
-    remoteLogger.debug('Remote command by ' + str(playerId) + ' ' + cmd)
-
-# Log name validation
-def onValidatePlayerName(realNick, oldNick, realPID, oldPID, player):
-    playerLogger.info('Player name validation "' + realNick + '".')
-
+    remoteLogger.debug('Remote command by %d: %s', playerId, cmd)
