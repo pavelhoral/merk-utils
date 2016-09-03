@@ -20,9 +20,9 @@ Set of useful GDB commands to help with analyzing server core dumps, mainly orie
 
 See component's [README.md](gdbtools/README.md) for more details.
 
-## IPTABLES Name Hack (namehack)
+## Iptables Name Hack Protection (namehack)
 
-IPTABLES based protection against so called *name hack* (when some player connects with faked name of already connected player, which causes mass CTD).
+Iptables based protection against so called *name hack* (when some player connects with faked name of already connected player, which causes mass CTD).
 
 This solution is **deprecated** in favor of a proxy based approach by [prproxy](https://github.com/pavelhoral/pr-gameproxy).
 
@@ -39,3 +39,8 @@ Guide how to setup Project Reality servers in a well defined environment called 
 Collection of scripts for running, managing and customizing Project Reality server deployment. These include modified server start-up script (handling restarts) and system init scripts (running server with its components - murmur, mumo, proxy).
 
 See component's [README.md](prserver/README.md) for more details.
+
+## Python Extension Base (pyebase)
+
+Game Python extension base module with shared components. See component's [README.md](pyebase/README.md) for more details.
+
