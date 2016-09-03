@@ -1,41 +1,41 @@
-# Project Reality Server Folder
+# MeRk Project Reality Server Utils
 
-This document serves as a description of the *Project Reality Server Folder* and also as a cheat sheet for the most common administration tasks.
+![MeRk](header.png)
 
-Main idea behind the PR Server Folder is that there is exactly one PR server master copy called *BASE* and then there are multiple server instances (e.g. *MAIN*, *EVENT*, *TRAINING*). Every directory is under Git version control. BASE directory has a *master* branch which are vanilla PR files and a *merk* branch which contains common server modifications. Server instance directories are direct clone of *base/merk* and have their own modifications (consisting namely of server configuration).
+*MeRk Utils* is a project with various utility scripts for running and managing Linux based Project Reality servers. This document gives a brief description of each project component. Some components might contain a more detailed description as a separate README in their own directory.
 
-The general structure of the root folder (usually placed under `/opt/pr`) is:
+## Common Properties
 
-* `base/` - BASE PR server files
-* `{instance}/` - server instances (clone of the BASE PR)
-* `shared/` - shared server components
-   * `nodejs/` - NodeJS installation
-   * `utils/` - shared utility scripts (clone of merk-utils)
-* `work/` - work directory for any other stuff
+Most of the tools use the following common dictionary:
 
+* *server base* - base directory of PR server installation
+* *server name* - symbolic name of the running PR server
+* *utils base* - base directory containing this project
 
-## Preparing BASE Server Files
+Each component is usually configured via environment variables so there is no need to modify any files inside this project. Some components can autodetect their configuration or infer from other other variables (e.g. `SERVER_NAME` is taken as dirname of `SERVER_BASE`).
 
-You will need server package downloaded from the license page of realitymod.com. After unpacking the server files they should be immediatelly put under version control:
+## GDB Tools (gdbtools)
 
-    git init
-    git add .
-    git commit -m 'Base server files.'
+Set of useful GDB commands to help with analyzing server core dumps, mainly oriented at segfaults inside Python code. When imported it gives you ability to use `less` as GDB pager and also access CPython objects in a more friendly manner via `pyp` command.
 
-Next a special branch which will hold BASE server modifications:
+See component's [README.md](gdbtools/README.md) for more details.
 
-    git checkout -b merk
+## IPTABLES Name Hack (namehack)
 
-To link everything up the following modifications should be done indifr BASE directory:
+IPTABLES based protection against so called *name hack* (when some player connects with faked name of already connected player, which causes mass CTD).
 
-    ln -s ../shared shared
-    ln -s shared/utils/prserver/start_server.sh .
+This solution is **deprecated** in favor of a proxy based approach by [prproxy](https://github.com/pavelhoral/pr-gameproxy).
 
+## Net Dump (netdump)
 
-## Creating New Server Instance
+TCPDUMP wrapper for capturing network activity in a space limited fashion. Script `netdump.sh` runs the *tcpdump* to collect packets in 10 minute based segments (PR can generate 1~2 GB) and `cleanup.sh` drops old capture files.
 
-Let's say you want to create new instance called `foobar`. First you need to clone the BASE server files:
+## Project Reality Folder (prfolder)
 
-    git clone -b merk foobar
+Guide how to setup Project Reality servers in a well defined environment called *Project Reality Folder*. You should follow the [suggested structure](prfolder/README.md) to get the most out of the scripts inside this project and to get nice stable server deployment.
 
+## Project Reality Server Scripts (prserver)
 
+Collection of scripts for running, managing and customizing Project Reality server deployment. These include modified server start-up script (handling restarts) and system init scripts (running server with its components - murmur, mumo, proxy).
+
+See component's [README.md](prserver/README.md) for more details.

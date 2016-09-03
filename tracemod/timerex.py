@@ -18,7 +18,7 @@ def init():
     bf2.Timer = TimerEx
     print 'timerex.py initialized'
 
-# Bit safer variant of host.timer_destroy. 
+# Bit safer variant of host.timer_destroy.
 def timer_destroy(timer):
     if timer and timer.destroy:
         timer.destroy()
@@ -29,10 +29,12 @@ def timer_destroy(timer):
 class TimerEx:
 
     timerIndex = 0
+    timerCount = 0
 
     def __init__(self, targetFunc, delta, alwaysTrigger, data = None):
         # Custom properties
         TimerEx.timerIndex += 1
+        TimerEx.timerCount += 1
         self.index = '%05d' % TimerEx.timerIndex
         self.destroyed = False
         self.triggered = False
@@ -43,13 +45,15 @@ class TimerEx:
         self.interval = 0.0
         self.alwaysTrigger = alwaysTrigger
         host.timer_created(self)
-        logger.debug(self.index + ' A created ' + targetFunc.__name__)
+        logger.debug(self.index + ' A created ' + targetFunc.__name__ +
+                '[' + str(TimerEx.timerCount) + ']')
 
     def __del__(self):
         # Prevent releasing non-destroyed timer
         if not self.destroyed:
             logger.error(self.index + ' D non-destroyed release')
             self.destroy()
+        TimerEx.timerCount -= 1
         logger.debug(self.index + ' D destroyed')
 
     def destroy(self):
@@ -70,7 +74,7 @@ class TimerEx:
 
     def setRecurring(self, interval):
         self.interval = interval
-        return self # Makes creating recurring timer more convenient 
+        return self # Makes creating recurring timer more convenient
 
     def onTrigger(self):
         self.triggered = True
