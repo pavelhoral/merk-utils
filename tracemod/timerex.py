@@ -1,7 +1,8 @@
 #
 # Various fixes and safety checks for bf2.Timer object.
 #
-import sys, traceback
+import sys
+import traceback
 import host
 from pyebase import Logger
 
@@ -45,22 +46,22 @@ class TimerEx:
         self.interval = 0.0
         self.alwaysTrigger = alwaysTrigger
         host.timer_created(self)
-        logger.debug('%d A created %s [%d]', self.index, targetFunc.__name__, TimerEx.timerCount)
+        logger.debug('%s A created %s [%d]', self.index, targetFunc.__name__, TimerEx.timerCount)
 
     def __del__(self):
         # Prevent releasing non-destroyed timer
         if not self.destroyed:
-            logger.error('%d D non-destroyed release', self.index)
+            logger.error('%s D non-destroyed release', self.index)
             self.destroy()
         TimerEx.timerCount -= 1
-        logger.debug('%d D destroyed', self.index)
+        logger.debug('%s D destroyed', self.index)
 
     def destroy(self):
             # Prevent duplicate destroy call
             if self.destroyed:
-                logger.error('%d C prevented duplicate destroy', self.index)
+                logger.error('%s C prevented duplicate destroy', self.index)
                 return
-            logger.debug('%d C destroying', self.index)
+            logger.debug('%s C destroying', self.index)
             host.original_timer_destroy(self)
             self.destroyed = True
 
@@ -68,7 +69,7 @@ class TimerEx:
         return self.time
 
     def setTime(self, time):
-        logger.debug('%d B rescheduling %.3f', self.index, time)
+        logger.debug('%s B rescheduling %.3f', self.index, time)
         self.time = time
 
     def setRecurring(self, interval):
@@ -77,10 +78,11 @@ class TimerEx:
 
     def onTrigger(self):
         self.triggered = True
-        logger.debug('%d B triggered', self.index)
+        logger.debug('%s B triggered', self.index)
         try:
             self.targetFunc(self.data)
         except:
             logger.error('Uncaught handler error: %s', sys.exc_info()[1])
             traceback.print_exc()
             raise
+

@@ -1,11 +1,11 @@
 #
 # Project Reality Python extension shared base components.
 #
-
+import sys
 
 # Expose Logger class directly
-import pyebase.logger
-Logger = pyebase.logger.Logger
+import logger
+Logger = logger.Logger
 
 #
 # Initialize server Python logging.
@@ -16,4 +16,5 @@ def initLogging(debug = False):
     sys.stdout = output
     sys.stderr = output
     # Configure debug logging
-    pyebase.logger.LoggerConfig.setDebugEnabled(debug)
+    logger.LoggerConfig.setDebugEnabled(debug)
+

@@ -1,7 +1,9 @@
 #
 # Event dispatcher replacement for realityevents.py.
 #
-import sys, traceback
+import sys
+import traceback
+import host
 from pyebase import Logger
 import game.realityevents
 

@@ -3,5 +3,6 @@
 #
 
 # Initialize Name Hack event hooks
-import namehack.namehack
+import namehack
 namehack.init()
+

@@ -26,3 +26,4 @@ def fixAdminTimerLeak(data = None):
             timers.append(timer)
     del game.realityadmin.guidLogTimer[:]
     game.realityadmin.guidLogTimer = timers
+

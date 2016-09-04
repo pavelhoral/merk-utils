@@ -3,5 +3,6 @@
 #
 
 # Initialize RealityFix - PR fixes and workarounds
-import realityfix.realityfix
-realityfix.realityfix.init()
+import realityfix
+realityfix.init()
+

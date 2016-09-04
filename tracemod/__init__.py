@@ -3,15 +3,14 @@
 #
 
 # Initialize TimerEx - bf2.Timer replacement
-import tracemod.timerex
-tracemod.timerex.init()
+import timerex
+timerex.init()
 
 # Initialize Dispatcher - PR event dispatcher
-import tracemod.dispatcher
-tracemod.dispatcher.init()
-
-
+import dispatcher
+dispatcher.init()
 
 # Initialize EventLog - additional event logging
-import tracemod.eventlog
-tracemod.eventlog.init()
+import eventlog
+eventlog.init()
+

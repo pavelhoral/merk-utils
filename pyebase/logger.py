@@ -23,16 +23,21 @@ class Logger:
         self.name = name
 
     def write(self, level, message, *arguments):
-        message = '[%s] %s %s ' + message
+        message = '[%s] %s [%s] ' + message
         arguments = (datetime.now().isoformat(), level, self.name) + arguments
-        print message % params
+        try:
+            print message % arguments
+        except:
+            print 'ERROR invalid log message format: ' + message
+            print 'Parameters: ' + str(arguments)
 
     def debug(self, message, *arguments):
         if (LoggerConfig.debug):
-             self.write('DEBUG', message)
+             self.write('DEBUG', message, *arguments)
 
     def info(self, message, *arguments):
-        self.write('INFO', message)
+        self.write('INFO', message, *arguments)
 
     def error(self, message, *arguments):
-        self.write('ERROR', message)
+        self.write('ERROR', message, *arguments)
+

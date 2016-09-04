@@ -6,6 +6,7 @@ This module requires [pyebase](../pyebase/README.md).
 
 ## Installation
 
-To initialize the module place the following lines at the end of `$SERVER_BASE python/bf2/__init__.py` (on the global scope, **not** inside `init_module`):
+To initialize the module place the following lines at the beginning of `$SERVER_BASE/mods/pr/python/game/__init__.py`:
 
     import realityfix
+
