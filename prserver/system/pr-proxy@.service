@@ -1,0 +1,12 @@
+[Unit]
+Description=Project Reality Proxy
+PartOf=pr-INSTANCE.service
+Before=pr-INSTANCE.service
+
+[Service]
+Type=simple
+User=pr
+WorkingDirectory=/opt/pr/%I
+Environment="SERVER_BASE=/opt/pr/%I" "DEBUG=0"
+ExecStart=/bin/bash -c 'shared/nodejs/bin/node shared/proxy/src >> proxy.log'
+

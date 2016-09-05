@@ -1,0 +1,15 @@
+[Unit]
+Description=PR Server
+Requires=network-online.target
+Wants=pr-proxy@INSTANCE.service pr-murmur@INSTANCE.service pr-mumo@INSTANCE.service
+
+[Service]
+Type=forking
+User=pr
+WorkingDirectory=/opt/pr/%I
+ExecStart=/usr/bin/screen -dmUS pr-%I -t SERVER ./start_server.sh
+TimeoutStopSec=3
+TimeoutStartSec=10
+KillSignal=SIGINT
+
+

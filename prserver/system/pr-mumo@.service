@@ -1,0 +1,12 @@
+[Unit]
+Description=Project Reality Mumo
+PartOf=pr-server@INSTANCE.service
+Requires=pr-murmur@INSTANCE.service
+After=pr-murmur@INSTANCE.service
+
+[Service]
+Type=simple
+User=pr
+WorkingDirectory=/opt/pr/%I/mods/pr/bin/PRMurmur
+ExecStart=/bin/bash -c ./startmumo.sh
+

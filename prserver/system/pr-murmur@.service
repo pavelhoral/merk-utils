@@ -1,0 +1,10 @@
+[Unit]
+Description=Project Reality Murmur
+PartOf=pr-server@INSTANCE.service
+
+[Service]
+Type=simple
+User=pr
+WorkingDirectory=/opt/pr/%I/mods/pr/bin/PRMurmur
+ExecStart=/bin/bash -c './prmurmurd.x64 -fg 2>> prmurmur.log'
+

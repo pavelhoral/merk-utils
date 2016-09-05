@@ -4,17 +4,22 @@ All you need to get the Project Reality server up and running. Every script cont
 
 Scripts should not be modified directly, but rather customized through symbolic links and environment variables.
 
-## Server Start-up
+## Start-up Script (`start_server.sh`)
 
-The main script regarding server's start-up is `start_server.sh`. This script runs the server and can automatically restart it in case of a crash. Every start and restart is logged inside `server.log` file. In addition to the standard operation the script also auto-detects and runs two hook scripts:
+The main script regarding server's start-up logic is `start_server.sh`. This script runs the server and automatically restarts it in case of a crash. Every start and restart is logged inside `server.log` file. In addition to the standard operation the script also auto-detects and runs two hook scripts:
 
 * `on_before_start.sh` - run just before the server is started
 * `on_after_crash.sh` - run just after the server crashes
 
 The standard set-up is that the `start_server.sh` is linked inside server's base directory. Example *BEFORE START* script is `change_startmap.sh`. Example *AFTER CRASH* script is `collect_debug.sh`.
 
-## Init Script
+## Systemv Init Scripts (`init`)
 
-Base script for running the server as a system service is `server_control.sh`. This script contains shared functions for writing init scripts. Example init script is `server_init.sh`.
+This folder contains SystemV init scripts for running PR as a service. Check script comments for more information.
 
-Every server instance should have its own copy of `server_init.sh` inside `/etc/init.d`. The base `server_control.sh` should be shared. For more information read script comments.
+SystemV is deprecated in favor of SystemD and the scripts are not maintained.
+
+## Systemd Init Scripts (`system`)
+
+Template systemd unit configurations. To use copy these files with appropriate instance name into `/etc/systemd/system` folder (e.g. `pr-server@.service` as `pr-service@main.service`) and modify the contents as needed.
+
