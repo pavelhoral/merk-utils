@@ -10,9 +10,11 @@ class LoggerConfig:
 
     debug = False
 
-    @staticmethod
+#    @staticmethod
     def setDebugEnabled(debug):
         LoggerConfig.debug = debug
+
+    setDebugEnabled = staticmethod(setDebugEnabled)
 
 #
 # Simple console logger component.

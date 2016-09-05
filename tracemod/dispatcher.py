@@ -81,9 +81,10 @@ def registerGameStatusHandler(handler):
 #
 def unregisterGameStatusHandler(handler):
     handlerName = handler.__module__ + ' ' + handler.func_name
-    for registeredHandler in statusHandlers.items():
+    for registeredHandler in statusHandlers:
         if registeredHandler == handler:
             logger.debug('Unregistering status handler %s [%d].', handlerName, len(statusHandlers))
             statusHandlers.remove(handler)
             return
     logger.error('Trying to unregister non-registered handler: %s.', handlerName)
+

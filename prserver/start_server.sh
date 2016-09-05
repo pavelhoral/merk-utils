@@ -57,7 +57,7 @@ cd "$SERVER_BASE"
 
 log_message "Running server start-up script."
 echo "To stop the server press Ctrl+C..."
-trap 'log_message "Server execution interrupted... aborting restart cycle."; exit 1' 2
+trap 'log_message "Server execution interrupted... aborting restart cycle."; exit 0' 2
 
 RESTART_COUNTER=0
 while true; do
