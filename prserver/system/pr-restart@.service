@@ -1,0 +1,8 @@
+[Unit]
+Description=PR Server Restart
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl restart pr-server@%I.service
+TimeoutSec=15
+
