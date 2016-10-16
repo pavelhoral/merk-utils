@@ -21,5 +21,5 @@ SystemV is deprecated in favor of SystemD and the scripts are not maintained.
 
 ## Systemd Init Scripts (`system`)
 
-Template systemd unit configurations. To use copy these files with appropriate instance name into `/etc/systemd/system` folder (e.g. `pr-server@.service` as `pr-service@main.service`) and modify the contents as needed.
+Template systemd unit configurations. To use copy these files with appropriate instance name into `/etc/systemd/system` folder (e.g. `pr-server@.service` as `pr-server@main.service`) and modify the contents as needed.
 
