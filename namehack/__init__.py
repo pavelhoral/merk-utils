@@ -1,8 +1,18 @@
+# ------------------------------------------------------------------
 #
-# Name Hack IPTABLES hook module responsible for managing NAMEHACK chain by calling namehack.sh script.
+# PROJECT REALITY SERVER INIT
+#
+# This file can be edited by any server (public or private).
 #
 
-# Initialize Name Hack event hooks
-import namehack
-namehack.init()
+# Import namehack module - initialize before realityinit!
+import bf2.namehack
+bf2.namehack.init()
+
+import realityinit
+
+realityinit.init(False)  # Switch to True if using debugger executables (PRLauncher.exe will automatically modify this value accordingly)
+
+# ------------------------------------------------------------------
+# Add your custom script's initilization bellow
 
