@@ -5,7 +5,7 @@ import host
 import os
 
 # This should be immutable version of the script as allowed in the sudo config
-NAMEHACK_SCRIPT = os.path.realpath('shared/namehack/namehack.sh')
+NAMEHACK_SCRIPT='/usr/local/sbin/namehack.sh'
 
 # Initialize Name Hack handlers
 def init():
