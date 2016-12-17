@@ -8,4 +8,3 @@ Inside `$SERVER_BASE/python/bf2/__init__.py` at the beginning of the `init_modul
 
     import pyebase
     pyebase.initLogging(False) # `True` to enable debug logging
-

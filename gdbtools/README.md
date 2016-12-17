@@ -11,7 +11,8 @@ Preferred way of installation is loading both the GDB command script and the Pyt
 
 # Using LESS
 
-When analyzing long output, not being able to scroll back or actively search is quite painful. You can prefix any command with `less` to use LESS as the output pager.
+When analyzing long output, not being able to scroll back or actively search is quite painful.
+You can prefix any command with `less` to use LESS as the output pager.
 
 Usage:
 
