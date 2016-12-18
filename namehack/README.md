@@ -29,8 +29,6 @@ This module is managing NAMEHACK iptables chain which contains rules to prevent 
 
 ## Installation
 
-Files in this module needs to be owned by *root* user and have to be immutable (i.e. only root should be allowed to modify them). This is necessary as the `namehack.sh` script will be called with NOPASSWD `sudo`.
-
 Installation steps are:
 
 * Copy `namehack.sh` to `/usr/local/sbin` (make sure the script is owned by `root`).
