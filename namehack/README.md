@@ -33,9 +33,8 @@ Files in this module needs to be owned by *root* user and have to be immutable (
 
 Installation steps are:
 
-* Store module files under some immutable location, e.g. `/opt/pr/shared/namehack`.
-* Link namehack module under `$SERVER_BASE/python` or add utils folder to `sys.path`.
-* Import and initialize Name Hack hook inside `$SERVER_BASE/python/bf2/__init__.py`.
-   * Place the initialization on the global script scope, not inside the `init_module` method.
-* Copy `sudoers.conf` as `/etc/sudoers.d/namehack`.
-
+* Copy `namehack.sh` to `/usr/local/sbin` (make sure the script is owned by `root`).
+* Copy `sudoers.conf` as `/etc/sudoers.d/namehack` (make sure the file is owned by `root`).
+* Copy `namehack.py` inside `$SERVER_BASE/python/bf2`.
+* Import and initialize the module from `$SERVER_BASE/mods/pr/python/game/__init__.py`.
+   * You can use the `__init__.py` supplied in this package.
